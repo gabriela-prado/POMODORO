@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'package:flutter_beep/flutter_beep.dart';
 
 void main() => runApp(MyApp());
 
@@ -49,11 +50,13 @@ class _CountDownTimerState extends State<CountDownTimer>
       if (status == AnimationStatus.completed) {
         // a animação começa
         //refaz o loop
-
+        FlutterBeep.playSysSound(49);
         // verifica se é a primeira vez, se não for, muda
         if (text != "POMODORO") {
           text = "POMODORO";
           i++;
+          FlutterBeep.playSysSound(49);
+
           controller.duration = Duration(seconds: 10);
         }
         controller.reverse();
@@ -61,8 +64,10 @@ class _CountDownTimerState extends State<CountDownTimer>
         // a animação terminou
         setState(() {
           text = "DESCANSO";
+          FlutterBeep.playSysSound(49);
           controller.duration = Duration(seconds: 5);
         });
+
         //volta o loop
         controller.forward();
       }
