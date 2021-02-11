@@ -1,16 +1,32 @@
-# pomodoro
+# 🍅 POMODORO
 
-A new Flutter project.
+O app Pomodoro é um projeto que foi proposto pela Jera Academy com o objetivo de avaliar as habilidades de desenvolvimento do estudante. O aplicativo tem como objetivo auxiliar as pessoas que utilizam da técnica Pomodoro para organizar seu dia.
 
-## Getting Started
+## 📖 Sumário
+Aqui você encontra uma visão geral sobre o projeto:
+* [Pré-requisito](#-pré-requisito)
+* [Framework utilizado](#-framework-utilizado)
+* [Instalação](#-instalação)
+* [Licença](#-licença)
 
-This project is a starting point for a Flutter application.
+## ✅ Pré-requisito
+O que preciso ter para adquirir o Pomodoro?
+* [Flutter (SDK) e Android SDK](https://flutter.dev/docs/get-started/install)
 
-A few resources to get you started if this is your first Flutter project:
+## 💻 Framework utilizado
+Qual ferramenta foi utilizada no desenvolvimento?
+* [Flutter](https://flutter.dev)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## 📲 Instalação 
+Para adquirir o app Pomodoro no seu dispositivo, você precisa fazer um clone do repositório e acessá-lo. Segue as instruções:
+```
+git clone https://github.com/gabriela-prado/Pomodoro.git
+cd Pomodoro
+```
+Para executar no seu dispositivo, utilize o comando:
+```
+flutter run
+```
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📄 Licença
+Este projeto está sob a licença MIT. Acesse o arquivo [LICENSE](./LICENSE) para mais informações.
