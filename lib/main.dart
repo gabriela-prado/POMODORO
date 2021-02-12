@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter_beep/flutter_beep.dart';
+import 'package:pomodoro/screens/picker_timer.dart';
 
 void main() => runApp(MyApp());
 
@@ -58,7 +59,7 @@ class _CountDownTimerState extends State<CountDownTimer>
           i++;
           FlutterBeep.playSysSound(49);
 
-          controller.duration = Duration(seconds: 10);
+          controller.duration = Duration(seconds: time);
         }
         controller.reverse();
       } else if (status == AnimationStatus.dismissed) {
@@ -72,15 +73,16 @@ class _CountDownTimerState extends State<CountDownTimer>
 
         if (vezesPomodoro == 4) {
           _showMyDialog().then((value) => {
-            if (value == true){
-              setState(() {
-                controller.duration = Duration(seconds: 20);
-              }),
-              controller.forward()
-            }else{
-              controller.forward()
-            }
-          });
+                if (value == true)
+                  {
+                    setState(() {
+                      controller.duration = Duration(seconds: 20);
+                    }),
+                    controller.forward()
+                  }
+                else
+                  {controller.forward()}
+              });
         } else {
           controller.forward();
         }
@@ -127,109 +129,127 @@ class _CountDownTimerState extends State<CountDownTimer>
     return Scaffold(
       backgroundColor: Colors.black,
       body: AnimatedBuilder(
-          animation: controller,
-          builder: (context, child) {
-            return Stack(
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    color: Colors.indigo[900],
-                    height:
-                        controller.value * MediaQuery.of(context).size.height,
-                  ),
+        animation: controller,
+        builder: (context, child) {
+          return Stack(
+            children: <Widget>[
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  color: Colors.indigo[900],
+                  height: controller.value * MediaQuery.of(context).size.height,
                 ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(
-                        child: Align(
-                          alignment: FractionalOffset.center,
-                          child: AspectRatio(
-                            aspectRatio: 1.0,
-                            child: Stack(
-                              children: <Widget>[
-                                Positioned.fill(
-                                  child: CustomPaint(
-                                      painter: CustomTimerPainter(
-                                    animation: controller,
-                                    backgroundColor: Colors.white,
-                                    color: themeData.indicatorColor,
-                                  )),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: Align(
+                        alignment: FractionalOffset.center,
+                        child: AspectRatio(
+                          aspectRatio: 1.0,
+                          child: Stack(
+                            children: <Widget>[
+                              Positioned.fill(
+                                child: CustomPaint(
+                                    painter: CustomTimerPainter(
+                                  animation: controller,
+                                  backgroundColor: Colors.white,
+                                  color: themeData.indicatorColor,
+                                )),
+                              ),
+                              Align(
+                                alignment: FractionalOffset.center,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      "$text $i",
+                                      style: TextStyle(
+                                          fontSize: 20.0, color: Colors.white),
+                                    ),
+                                    Text(
+                                      timerString,
+                                      style: TextStyle(
+                                          fontSize: 112.0, color: Colors.white),
+                                    ),
+                                  ],
                                 ),
-                                Align(
-                                  alignment: FractionalOffset.center,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(
-                                        "$text $i",
-                                        style: TextStyle(
-                                            fontSize: 20.0,
-                                            color: Colors.white),
-                                      ),
-                                      Text(
-                                        timerString,
-                                        style: TextStyle(
-                                            fontSize: 112.0,
-                                            color: Colors.white),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      AnimatedBuilder(
-                          animation: controller,
-                          builder: (context, child) {
-                            return FloatingActionButton.extended(
-                                onPressed: () {
-                                  if (controller.isAnimating)
-                                    controller.stop();
-                                  else {
-                                    controller.reverse(
-                                        from: controller.value == 0.0
-                                            ? 1.0
-                                            : controller.value);
-                                  }
-                                },
-                                icon: Icon(controller.isAnimating
-                                    ? Icons.pause
-                                    : Icons.play_arrow),
-                                label: Text(
-                                    controller.isAnimating ? "PAUSE" : "PLAY"));
-                          }),
-
-                      /* AnimatedBuilder(
-                          animation: controller,
-                          builder: (context, child) {
-                            return FloatingActionButton.extended(
-                                onPressed: () {
-                                  if (controller.isAnimating)
-                                    controller.stop();
-                                  else {
-                                    controller.reverse(
-                                        from: controller.value == 0.0
-                                            ? 1.0
-                                            : controller.value);
-                                  };
-                                  label: Text(
-                                    controller.isAnimating ? "MUDAR O TIMER"));
-                          ),*/
-                    ],
-                  ),
+                    ),
+                    AnimatedBuilder(
+                      animation: controller,
+                      builder: (context, child) {
+                        return FloatingActionButton.extended(
+                          onPressed: () {
+                            if (controller.isAnimating)
+                              controller.stop();
+                            else {
+                              controller.reverse(
+                                from: controller.value == 0.0
+                                    ? 1.0
+                                    : controller.value,
+                              );
+                            }
+                          },
+                          icon: Icon(
+                            controller.isAnimating
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                          ),
+                          label: Text(
+                            controller.isAnimating ? "PAUSE" : "PLAY",
+                          ),
+                        );
+                      },
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          alterarTimer(context);
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            Icon(Icons.access_alarm_outlined,
+                                color: Colors.black),
+                            Text(" ALTERAR O TIMER",
+                                style: TextStyle(color: Colors.black)),
+                          ],
+                        ),
+                        style: TextButton.styleFrom(
+                          fixedSize: Size(180, 40),
+                          backgroundColor: Colors.indigoAccent[100],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                        )),
+                  ],
                 ),
-              ],
-            );
-          }),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  void alterarTimer(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PickerTimer()),
+    ).then(
+      (value) => setState(() {
+        debugPrint(value.toString());
+        time = value;
+        controller.duration = Duration(seconds: time);
+      }),
     );
   }
 }
