@@ -33,6 +33,7 @@ class _CountDownTimerState extends State<CountDownTimer>
   int time = 10;
   String text = "POMODORO";
   int i = 1;
+  int vezesPomodoro = 0;
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
@@ -64,14 +65,60 @@ class _CountDownTimerState extends State<CountDownTimer>
         // a animação terminou
         setState(() {
           text = "DESCANSO";
+          vezesPomodoro++;
           FlutterBeep.playSysSound(49);
           controller.duration = Duration(seconds: 5);
         });
 
-        //volta o loop
-        controller.forward();
+        if (vezesPomodoro == 4) {
+          _showMyDialog().then((value) => {
+            if (value == true){
+              setState(() {
+                controller.duration = Duration(seconds: 20);
+              }),
+              controller.forward()
+            }else{
+              controller.forward()
+            }
+          });
+        } else {
+          controller.forward();
+        }
       }
     });
+  }
+
+  Future<bool> _showMyDialog() async {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('VOCÊ JÁ FEZ 4 POMODOROS SEGUIDOS!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('O que acha de descansar por 10min agora?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Não quero'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text('Quero!'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -160,6 +207,23 @@ class _CountDownTimerState extends State<CountDownTimer>
                                 label: Text(
                                     controller.isAnimating ? "PAUSE" : "PLAY"));
                           }),
+
+                      /* AnimatedBuilder(
+                          animation: controller,
+                          builder: (context, child) {
+                            return FloatingActionButton.extended(
+                                onPressed: () {
+                                  if (controller.isAnimating)
+                                    controller.stop();
+                                  else {
+                                    controller.reverse(
+                                        from: controller.value == 0.0
+                                            ? 1.0
+                                            : controller.value);
+                                  };
+                                  label: Text(
+                                    controller.isAnimating ? "MUDAR O TIMER"));
+                          ),*/
                     ],
                   ),
                 ),
