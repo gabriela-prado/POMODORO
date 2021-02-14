@@ -12,10 +12,11 @@ class CountDownTimer extends StatefulWidget {
 class _CountDownTimerState extends State<CountDownTimer>
     with TickerProviderStateMixin {
   AnimationController controller;
-  int time = 10;
+  int time = 1;
   String text = "POMODORO";
-  int i = 1;
-  int vezesPomodoro = 0;
+  int countPomodoro = 1;
+  int countDescanso = 1;
+  int count = 1;
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
@@ -33,55 +34,55 @@ class _CountDownTimerState extends State<CountDownTimer>
 
     controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        pomodoro();
+        setState(() {
+          if (text != "DESCANSO") {
+            controller.duration = Duration(seconds: time);
+          } else {
+            count = countDescanso;
+          }
+        });
+        FlutterBeep.playSysSound(49);
       } else if (status == AnimationStatus.dismissed) {
-        // a animação terminou
-        descanso();
-        verificarQtdePom();
+        setState(() {
+          if (countPomodoro == 4) {
+            verificarQtdePom();
+            countPomodoro++;
+          } else if (text == "POMODORO") {
+            countPomodoro++;
+            count = countPomodoro;
+          } else if (text == "DESCANSO") {
+            text = "POMODORO";
+            countDescanso++;
+          }
+        });
+        FlutterBeep.playSysSound(49);
       }
     });
-  }
-
-  void verificarQtdePom() {
-    if (vezesPomodoro == 4) {
-      _showMyDialog().then(
-        (value) => {
-          if (value == true){
-              setState(() {
-                  controller.duration = Duration(seconds: 20);
-              }),
-              controller.forward(),
-            }
-          else{
-            controller.forward(),
-          }
-        },
-      );
-    } else {
-      controller.forward(from: 0);
-    }
   }
 
   void descanso() {
     setState(() {
       text = "DESCANSO";
-      vezesPomodoro++;
-      FlutterBeep.playSysSound(49);
       controller.duration = Duration(seconds: 5);
     });
   }
 
-  void pomodoro() {
-    FlutterBeep.playSysSound(49);
-    if (text != "POMODORO") {
-      text = "POMODORO";
-      i++;
-      FlutterBeep.playSysSound(49);
-
-      controller.duration = Duration(seconds: time);
+  void verificarQtdePom() {
+    if (countPomodoro == 4) {
+      _showMyDialog().then(
+        (value) => {
+          if (value == true)
+            {
+              setState(() {
+                text = "DESCANSO";
+                controller.duration = Duration(seconds: 20);
+              }),
+            }
+        },
+      );
     }
-    controller.reverse();
   }
+  // FlutterBeep.playSysSound(49);
 
   Future<bool> _showMyDialog() async {
     return showDialog<bool>(
@@ -161,7 +162,7 @@ class _CountDownTimerState extends State<CountDownTimer>
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
-                                      "$text $i",
+                                      "$text $count",
                                       style: TextStyle(
                                           fontSize: 20.0, color: Colors.white),
                                     ),
@@ -205,6 +206,22 @@ class _CountDownTimerState extends State<CountDownTimer>
                       },
                     ),
                     Button(
+                      text: "Descanso".toUpperCase(),
+                      onPress: () {
+                        descanso();
+                        if (controller.isAnimating)
+                          controller.stop();
+                        else {
+                          controller.reverse(
+                            from: controller.value == 0.0
+                                ? 1.0
+                                : controller.value,
+                          );
+                        }
+                      },
+                    ),
+                    Button(
+                      text: "ALTERAR O TIMER",
                       onPress: () {
                         alterarTimer(context);
                       },
