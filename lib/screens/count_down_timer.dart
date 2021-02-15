@@ -12,11 +12,13 @@ class CountDownTimer extends StatefulWidget {
 class _CountDownTimerState extends State<CountDownTimer>
     with TickerProviderStateMixin {
   AnimationController controller;
-  int time = 1;
+  int time = 25;
   String text = "POMODORO";
   int countPomodoro = 1;
   int countDescanso = 1;
   int count = 1;
+  int seguidos = 0;
+  bool dialog = false;
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
@@ -28,32 +30,33 @@ class _CountDownTimerState extends State<CountDownTimer>
     super.initState();
 
     controller = AnimationController(
-      duration: Duration(seconds: time),
+      duration: Duration(minutes: time),
       vsync: this,
     );
 
     controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        setState(() {
-          if (text != "DESCANSO") {
-            controller.duration = Duration(seconds: time);
-          } else {
-            count = countDescanso;
-          }
-        });
+        dialog = false;
         FlutterBeep.playSysSound(49);
       } else if (status == AnimationStatus.dismissed) {
         setState(() {
-          if (countPomodoro == 4) {
-            verificarQtdePom();
+          if (text == "POMODORO") {
+            // incrementando pomodoros e mudando texto
             countPomodoro++;
-          } else if (text == "POMODORO") {
-            countPomodoro++;
+            seguidos++;
             count = countPomodoro;
+            if (seguidos % 4 == 0) {
+              verificarQtdePom();
+            }
           } else if (text == "DESCANSO") {
+            // incrementando descanso e mudando texto
             text = "POMODORO";
+            count = countPomodoro;
+            controller.duration = Duration(minutes: time);
             countDescanso++;
           }
+
+          // o erro tá aqui
         });
         FlutterBeep.playSysSound(49);
       }
@@ -61,28 +64,34 @@ class _CountDownTimerState extends State<CountDownTimer>
   }
 
   void descanso() {
+    int descanso = 5;
+
+    if (dialog && seguidos % 4 == 0) {
+      descanso = 10;
+    }
+
     setState(() {
       text = "DESCANSO";
-      controller.duration = Duration(seconds: 5);
+      count = countDescanso;
+      controller.duration = Duration(minutes: descanso);
     });
   }
 
   void verificarQtdePom() {
-    if (countPomodoro == 4) {
-      _showMyDialog().then(
-        (value) => {
-          if (value == true)
-            {
-              setState(() {
-                text = "DESCANSO";
-                controller.duration = Duration(seconds: 20);
-              }),
-            }
-        },
-      );
-    }
+    dialog = true;
+    _showMyDialog().then(
+      (value) => {
+        if (value == true)
+          {
+            setState(() {
+              text = "DESCANSO";
+              count = countDescanso;
+              controller.duration = Duration(minutes: 10);
+            }),
+          }
+      },
+    );
   }
-  // FlutterBeep.playSysSound(49);
 
   Future<bool> _showMyDialog() async {
     return showDialog<bool>(
@@ -207,6 +216,9 @@ class _CountDownTimerState extends State<CountDownTimer>
                     ),
                     Button(
                       text: "Descanso".toUpperCase(),
+                      icon: Icons.night_shelter,
+                      width: 150,
+                      height: 50,
                       onPress: () {
                         descanso();
                         if (controller.isAnimating)
@@ -221,6 +233,9 @@ class _CountDownTimerState extends State<CountDownTimer>
                       },
                     ),
                     Button(
+                      icon: Icons.access_alarm_outlined,
+                      width: 190,
+                      height: 50,
                       text: "ALTERAR O TIMER",
                       onPress: () {
                         alterarTimer(context);
@@ -244,7 +259,7 @@ class _CountDownTimerState extends State<CountDownTimer>
       (value) => setState(() {
         debugPrint(value.toString());
         time = value;
-        controller.duration = Duration(seconds: time);
+        controller.duration = Duration(minutes: time);
       }),
     );
   }
