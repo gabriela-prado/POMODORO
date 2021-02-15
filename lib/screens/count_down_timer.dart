@@ -19,6 +19,8 @@ class _CountDownTimerState extends State<CountDownTimer>
   int count = 1;
   int seguidos = 0;
   bool dialog = false;
+  String labelText = "PLAY";
+  IconData icon = Icons.play_arrow;
 
   String get timerString {
     Duration duration = controller.duration * controller.value;
@@ -36,6 +38,11 @@ class _CountDownTimerState extends State<CountDownTimer>
 
     controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
+        setState(() {
+          labelText = "PAUSE";
+          icon = Icons.pause;
+        });
+
         dialog = false;
         FlutterBeep.playSysSound(49);
       } else if (status == AnimationStatus.dismissed) {
@@ -56,7 +63,8 @@ class _CountDownTimerState extends State<CountDownTimer>
             countDescanso++;
           }
 
-          // o erro tá aqui
+          labelText = "PLAY";
+          icon = Icons.play_arrow;
         });
         FlutterBeep.playSysSound(49);
       }
@@ -193,6 +201,16 @@ class _CountDownTimerState extends State<CountDownTimer>
                       builder: (context, child) {
                         return FloatingActionButton.extended(
                           onPressed: () {
+                            setState(() {
+                              if (labelText == "PLAY") {
+                                labelText = "PAUSE";
+                                icon = Icons.pause;
+                              } else {
+                                labelText = "PLAY";
+                                icon = Icons.play_arrow;
+                              }
+                            });
+
                             if (controller.isAnimating)
                               controller.stop();
                             else {
@@ -204,12 +222,10 @@ class _CountDownTimerState extends State<CountDownTimer>
                             }
                           },
                           icon: Icon(
-                            controller.isAnimating
-                                ? Icons.pause
-                                : Icons.play_arrow,
+                            icon,
                           ),
                           label: Text(
-                            controller.isAnimating ? "PAUSE" : "PLAY",
+                            labelText,
                           ),
                         );
                       },

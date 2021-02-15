@@ -1,6 +1,6 @@
 # 🍅 POMODORO
 
-O app Pomodoro é um projeto que foi proposto pela Jera Academy com o objetivo de avaliar as habilidades de desenvolvimento do estudante. O aplicativo tem como objetivo auxiliar as pessoas que utilizam da técnica Pomodoro para organizar seu dia.
+O app Pomodoro é um projeto que foi proposto pela Jera Academy com o objetivo de avaliar as habilidades de desenvolvimento do estudante. O aplicativo tem como objetivo auxiliar as pessoas que utilizam da técnica Pomodoro para gerenciamento do seu tempo. A técnica consiste em dividir o trabalho em períodos de 25 minutos e intervalos de 5 minutos.
 
 ## 📖 Sumário
 Aqui você encontra uma visão geral sobre o projeto:
